@@ -26,7 +26,7 @@
       (cons n d)))
 
 ; Tests
-(print-rat (make-rat 1 3))   ; [ => 1/3 ]
+(print-rat (make-rat 1 3))   ; [ => 1/3   ]
 (print-rat (make-rat -1 3))  ; [ => -1/3  ]
 (print-rat (make-rat 1 -3))  ; [ => -1/3  ]
 (print-rat (make-rat -1 -3)) ; [ => 1/3   ]
