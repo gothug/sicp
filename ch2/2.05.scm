@@ -29,7 +29,7 @@
 (define x (cons 141231 128))
 
 (newline)
-(display "14  -> ")(display (car x))
+(display "141231 -> ")(display (car x))
 
 (newline)
-(display "128 -> ")(display (cdr x))
+(display "128    -> ")(display (cdr x))
