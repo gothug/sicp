@@ -30,16 +30,11 @@
   (accumulate + 0 (map * v w)))
 
 ; Solution
-(define (empty-rowed-matrix? m)
-  (null? (car m)))
-
 (define (matrix-*-vector m v)
   (map (lambda (k) (dot-product v k)) m))
 
-(define (transpose n)
-  (if (empty-rowed-matrix? n)
-      (list)
-      (cons (map car n) (transpose (map cdr n)))))
+(define (transpose mat)
+  (accumulate-n cons (list) mat))
 
 (define (matrix-*-matrix m n)
   (let ((cols (transpose n)))
