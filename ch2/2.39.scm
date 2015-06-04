@@ -17,8 +17,20 @@
 ; Solution
 (define nil (list))
 
-(define (reverse sequence)
-  (fold-right (lambda (x y) <??>) nil sequence))
+(define (reverse-1 sequence)
+  (fold-right (lambda (x y) (append y (list x))) nil sequence))
+
+(define (reverse-2 sequence)
+  (fold-left (lambda (x y) (cons y x)) nil sequence))
 
 ; Tests
 (run-tests-header)
+
+(should-be (reverse-1 (list 1 2 3)) (list 3 2 1))
+(should-be (reverse-2 (list 1 2 3)) (list 3 2 1))
+
+(should-be (reverse-1 (list 1)) (list 1))
+(should-be (reverse-2 (list 1)) (list 1))
+
+(should-be (reverse-1 nil) nil)
+(should-be (reverse-2 nil) nil)
