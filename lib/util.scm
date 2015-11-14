@@ -11,12 +11,12 @@
   (display "  "))
 
 (define (should-be a b)
-  (indent)(display a)(display " should be..")(newline)
-  (indent)(display b)(newline)
+  (indent)(display "    Result:   ")(display a)(newline)
+  (indent)(display "    Expected: ")(display b)(newline)
 
   (indent)
   (if (equal? a b)
       (display "- Passed")
-      (display "- Failed!"))
+      (display "*** FAILED! ***"))
   (newline)(newline))
 ; -- End of helper functions for tests
