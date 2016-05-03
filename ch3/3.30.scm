@@ -1,0 +1,15 @@
+; Solution
+(define (ripple-carry-adder as bs ss c)
+  (let ((ah (car as))
+        (at (cdr as))
+        (bh (car bs))
+        (bt (cdr bs))
+        (sh (car ss))
+        (st (cdr ss))
+        (ch (make-wire)))
+    (if (null? at)
+        (set-signal! ch 0)
+        (ripple-carry-adder at bt st ch)))
+    (full-adder ah bh ch sh c)
+  'ok)
+
