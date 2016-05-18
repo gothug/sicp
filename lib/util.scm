@@ -7,6 +7,9 @@
 (define (test str)
   (display str)(display ":")(newline))
 
+(define (displayn str)
+  (display str)(newline))
+
 (define (indent)
   (display "  "))
 
