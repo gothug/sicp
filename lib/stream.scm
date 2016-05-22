@@ -18,14 +18,16 @@
        (apply stream-map
               (cons proc (map stream-cdr argstreams))))))
 
-(define (stream-for-each proc s)
-  (if (stream-null? s)
-      'done
-      (begin (proc (stream-car s))
-             (stream-for-each proc (stream-cdr s)))))
+(define (stream-for-each proc s n)
+  (define (iter stream k)
+    (if (or (stream-null? stream) (= k 0))
+        'done
+        (begin (proc (stream-car stream))
+               (iter (stream-cdr stream) (- k 1)))))
+  (iter s n))
 
-(define (display-stream s)
-  (stream-for-each display-line s))
+(define (display-stream s n)
+  (stream-for-each display-line s n))
 
 (define (display-line x)
   (newline)
