@@ -8,6 +8,7 @@
 (define (self-evaluating? exp)
   (cond ((number? exp) true)
         ((string? exp) true)
+        ((boolean? exp) true)
         (else false)))
 
 ; variable
@@ -80,11 +81,14 @@
         ;((begin? exp) 
         ; (eval-sequence (begin-actions exp) env))
         ;((cond? exp) (eval (cond->if exp) env))
-        ((application? exp)
-         (apply (eval (operator exp) env)
-                (list-of-values (operands exp) env)))
         (else
-         (error "Unknown expression type -- EVAL" exp))))
+         (let ((eval-proc (get (car exp))))
+           (if eval-proc
+               (eval-proc (cdr exp) env)
+               (if (application? exp)
+                   (apply (eval (operator exp) env)
+                          (list-of-values (operands exp) env))
+                   (error "Unknown expression -- EVAL" exp)))))))
 
 ; (define (apply procedure arguments)
 ;   (cond ((primitive-procedure? procedure)

@@ -20,6 +20,6 @@
   (indent)
   (if (equal? a b)
       (display "- Passed")
-      (display "*** FAILED! ***"))
+      (warn "Failed"))
   (newline)(newline))
 ; -- End of helper functions for tests
