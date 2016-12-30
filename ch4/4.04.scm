@@ -27,7 +27,6 @@
 ; Tests
 (run-tests-header)
 
-;(define global-var "")
 (define env '())
 
 (test "and")
