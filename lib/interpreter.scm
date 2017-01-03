@@ -120,7 +120,7 @@
                 (sequence->exp (cond-actions first))
                 (error "ELSE clause isn't last -- COND->IF"
                        clauses))
-            (if (cond-special-form-clause? first)
+            (if (cond-special-syntax? first)
                 (make-if (cond-special-syntax-predicate first)
                          (list (cond-special-syntax-recipient first) (cond-special-syntax-predicate first))
                          (expand-clauses rest))
