@@ -14,8 +14,8 @@
   (search key table))
 
 ; Tests
-(run-tests-header)
-(put 'key1 1)
+;(run-tests-header)
+;(put 'key1 1)
 
-(should-be (get 'key1) 1)
-(should-be (get 'key2) #f)
+;(should-be (get 'key1) 1)
+;(should-be (get 'key2) #f)
