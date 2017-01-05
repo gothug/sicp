@@ -57,9 +57,6 @@
                     env)
   'ok)
 
-(define (make-lambda parameters body)
-  (cons 'lambda (cons parameters body)))
-
 ; if
 (define (if? exp) (tagged-list? exp 'if))
 (define (if-predicate exp) (cadr exp))
@@ -76,6 +73,13 @@
   (if (true? (eval (if-predicate exp) env))
       (eval (if-consequent exp) env)
       (eval (if-alternative exp) env)))
+
+; lambda
+(define (lambda? exp) (tagged-list? exp 'lambda))
+(define (lambda-parameters exp) (cadr exp))
+(define (lambda-body exp) (cddr exp))
+(define (make-lambda parameters body)
+  (cons 'lambda (cons parameters body)))
 
 ; begin
 (define (begin? exp) (tagged-list? exp 'begin))
@@ -128,6 +132,14 @@
                          (sequence->exp (cond-actions first))
                          (expand-clauses rest)))))))
 
+; let
+(define (let? exp) (tagged-list? exp 'let))
+(define (let->combination exp)
+  (make-application
+   (make-lambda (map car (cadr exp))
+                (cddr exp))
+   (map cadr (cadr exp))))
+
 ; application
 (define (application? exp) (pair? exp))
 (define (operator exp) (car exp))
@@ -140,6 +152,12 @@
       '()
       (cons (eval (first-operand exps) env)
             (list-of-values (rest-operands exps) env))))
+(define (make-application proc params)
+  (cons proc params))
+
+; procedures
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
 
 (define (eval exp env)
   (cond ((self-evaluating? exp) exp)
@@ -148,13 +166,14 @@
         ((assignment? exp) (eval-assignment exp env))
         ((definition? exp) (eval-definition exp env))
         ((if? exp) (eval-if exp env))
-        ;((lambda? exp)
-        ; (make-procedure (lambda-parameters exp)
-        ;                 (lambda-body exp)
-        ;                 env))
+        ((lambda? exp)
+         (make-procedure (lambda-parameters exp)
+                         (lambda-body exp)
+                         env))
         ((begin? exp)
          (eval-sequence (begin-actions exp) env))
         ((cond? exp) (eval (cond->if exp) env))
+        ((let? exp) (eval (let->combination exp) env))
         (else
          (let ((eval-proc (get (car exp))))
            (if eval-proc
