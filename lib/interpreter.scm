@@ -192,6 +192,34 @@
   (apply-in-underlying-scheme
    (primitive-implementation proc) args))
 
+(define (scan-out-defines body)
+  (define (loop body new-body defines)
+    (if (null? body)
+        (cons new-body defines)
+        (let ((first-exp (car body))
+              (rest-exp (cdr body)))
+          (if (definition? first-exp)
+              (loop rest-exp new-body (append defines (list first-exp)))
+              (loop rest-exp (append new-body (list first-exp)) defines)))))
+
+  (let* ((scan-result (loop body '() '()))
+         (new-body (car scan-result))
+         (defines (cdr scan-result)))
+    (if (null? defines)
+        body
+        (list
+         (append
+          (list
+           'let
+           (map
+            (lambda (def) (list (definition-variable def) ''*unassigned*))
+            defines))
+          (map
+           (lambda (def)
+             (list 'set! (definition-variable def) (definition-value def)))
+           defines)
+          new-body)))))
+
 ; environment
 (define (enclosing-environment env) (cdr env))
 (define (first-frame env) (car env))
@@ -218,7 +246,10 @@
       (cond ((null? vars)
              (env-loop (enclosing-environment env)))
             ((eq? var (car vars))
-             (car vals))
+             (let ((value (car vals)))
+               (if (eq? value '*unassigned*)
+                   (error "The variable has value *unassigned*:" var)
+                   value)))
             (else (scan (cdr vars) (cdr vals)))))
     (if (eq? env the-empty-environment)
         (error "Unbound variable" var)
@@ -275,7 +306,7 @@
         ((if? exp) (eval-if exp env))
         ((lambda? exp)
          (make-procedure (lambda-parameters exp)
-                         (lambda-body exp)
+                         (scan-out-defines (lambda-body exp))
                          env))
         ((begin? exp)
          (eval-sequence (begin-actions exp) env))
