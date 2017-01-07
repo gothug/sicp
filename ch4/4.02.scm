@@ -2,7 +2,7 @@
 (load "../lib/util.scm")
 
 (define (define-variable! var val env) (set! global-var val)) ; dummy define
-(define (apply procedure arguments) (car arguments))          ; dummy apply
+(define (apply-meta procedure arguments) (car arguments))     ; dummy apply
 (define (self-evaluating? exp) ; to stop evaluation upon a symbol too, so far
   (cond ((number? exp) true)
         ((string? exp) true)
@@ -12,7 +12,7 @@
 (define (eval exp env)
   (cond ((self-evaluating? exp) exp)
         ((application? exp)
-         (apply (eval (operator exp) env)
+         (apply-meta (eval (operator exp) env)
                 (list-of-values (operands exp) env)))
         ((definition? exp) (eval-definition exp env))
         (else
@@ -31,5 +31,5 @@
   (eval '(define x 4) env)
   (should-be global-var 4)
 
-(test "apply")
+(test "apply-meta")
   (should-be (eval '(call 1 2 3 4 5) env) 1)

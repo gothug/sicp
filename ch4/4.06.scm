@@ -3,7 +3,7 @@
 (load "../lib/table.scm")
 
 ; Solution
-(define (apply procedure arguments) (cons "applying" (cons procedure arguments)))          ; dummy apply
+(define (apply-meta procedure arguments) (cons "applying" (cons procedure arguments)))          ; dummy apply
 
 ; Tests
 (run-tests-header)

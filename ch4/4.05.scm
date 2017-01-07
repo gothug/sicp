@@ -3,7 +3,7 @@
 (load "../lib/table.scm")
 
 ; Solution
-(define (apply procedure arguments) (cons "applying" (cons procedure arguments)))          ; dummy apply
+(define (apply-meta procedure arguments) (cons "applying" (cons procedure arguments)))          ; dummy apply
 ; special syntax support for cond is implemented in file lib/interpreter.scm
 
 ; Tests

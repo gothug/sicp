@@ -3,11 +3,11 @@
 (load "../lib/table.scm")
 
 ; Solution
-(define (apply procedure arguments) (cdr arguments))          ; dummy apply
+(define (apply-meta procedure arguments) (cdr arguments))     ; dummy apply
 (define (define-variable! var val env) (set! global-var val)) ; dummy define
 
 (define (eval-application exp env)
-   (apply (eval (operator exp) env)
+   (apply-meta (eval (operator exp) env)
      (list-of-values (operands exp) env)))
 
 (put 'application eval-application)
@@ -30,7 +30,7 @@
 (test "number")
   (should-be (eval 4 env) 4)
 
-(test "apply")
+(test "apply-meta")
   (should-be (eval '(application "op" 1 2 3 4) env) '(2 3 4))
 
 (test "define")
