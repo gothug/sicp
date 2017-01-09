@@ -171,6 +171,7 @@
         (list '- -)
         (list '/ /)
         (list '* *)
+        (list '= =)
         ; more primitives
         ))
 (define (primitive-procedure-names)
