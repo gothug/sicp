@@ -3,15 +3,12 @@
 (load "../lib/util.scm")
 
 ; Solution
-; code in lib/interpreter.scm
+; code in lib/interpreter-analyzed.scm
 
 ; Tests
 (run-tests-header)
 
 (define the-global-environment (setup-environment))
 
-(eval '(+ 1 2) the-global-environment)
-
-;(test "lookup-variable-value")
-;  (should-be (eval '(begin (define x 3) x) the-global-environment)
-;             3)
+(test "let")
+  (should-be (eval '(let ((x 1) (y 2)) (+ x y)) the-global-environment) 3)
