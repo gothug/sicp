@@ -1,4 +1,5 @@
 (load "../lib/util.scm")
+(load "../lib/interpreter.scm")
 
 ; Solution
 
