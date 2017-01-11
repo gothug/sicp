@@ -136,11 +136,13 @@
 
 ; let
 (define (let? exp) (tagged-list? exp 'let))
+(define (let-body exp) (cddr exp))
+(define (let-defines exp) (cadr exp))
 (define (let->combination exp)
   (make-application
-   (make-lambda (map car (cadr exp))
-                (cddr exp))
-   (map cadr (cadr exp))))
+   (make-lambda (map car (let-defines exp))
+                (let-body exp))
+   (map cadr (let-defines exp))))
 
 ; application
 (define (application? exp) (pair? exp))
