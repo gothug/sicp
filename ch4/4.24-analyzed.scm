@@ -1,9 +1,8 @@
 (load "../lib/interpreter.scm")
+(load "../lib/interpreter-analyzed.scm")
 (load "../lib/util.scm")
 
 ; Tests
-(run-tests-header)
-
 (define the-global-environment (setup-environment))
 
 (define recursive #f)
@@ -29,12 +28,4 @@
           (fact 5000))
        the-global-environment)))
 
-; Timings
-;
-; eval:
-;   recursive: 0.58s
-;   tail recursive: 0.65s
-
-; analyzed:
-;   recursive: 0.35s
-;   tail recursive: 0.44s
+;(displayn result)
