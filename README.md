@@ -7,4 +7,4 @@ microcode 15.3.
 run tests
 =========
 cd <chapter dir>
-for f in `ls`; do mit-scheme --load $f | tee -i /tmp/tests.out; cat /tmp/tests.out | grep --colour Failed && break; done;
+for f in `ls`; do mit-scheme --batch-mode --load $f | tee -i /tmp/tests.out; cat /tmp/tests.out | grep --colour Failed && break; done;
