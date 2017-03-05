@@ -10,8 +10,11 @@
         ((quoted? exp) (analyze-quoted exp))
         ((variable? exp) (analyze-variable exp))
         ((assignment? exp) (analyze-assignment exp))
+        ((permanent-assignment? exp) (analyze-permanent-assignment exp))
         ((definition? exp) (analyze-definition exp))
         ((if? exp) (analyze-if exp))
+        ((not? exp) (analyze-not exp))
+        ((equality? exp) (analyze-eq exp))
         ((lambda? exp) (analyze-lambda exp))
         ((begin? exp) (analyze-sequence (begin-actions exp)))
         ((cond? exp) (analyze (cond->if exp)))
@@ -76,6 +79,31 @@
              ;; failure continuation for evaluating the predicate
              fail))))
 
+(define (analyze-not exp)
+  (let ((cproc (analyze (not-content exp))))
+    (lambda (env succeed fail)
+      (cproc env
+             (lambda (value fail2)
+               (if (true? value)
+                   (succeed false fail2)
+                   (succeed true fail2)))
+             fail))))
+
+(define (analyze-eq exp)
+  (let ((lval (analyze (equality-left exp)))
+        (rval (analyze (equality-right exp))))
+    (lambda (env succeed fail)
+      (lval env
+            (lambda (lv fail2)
+              (rval env
+                    (lambda (rv fail3)
+                      (if (eq? lv rv)
+                          (succeed true fail3)
+                          (succeed false fail3)))
+                    fail2))
+            fail))))
+
+
 (define (analyze-definition exp)
   (let ((var (definition-variable exp))
         (vproc (analyze (definition-value exp))))
@@ -101,6 +129,20 @@
                                                  old-value
                                                  env)
                             (fail2)))))
+             fail))))
+
+; permanent assignment
+(define (permanent-assignment? exp)
+  (tagged-list? exp 'permanent-set!))
+
+(define (analyze-permanent-assignment exp)
+  (let ((var (assignment-variable exp))
+        (vproc (analyze (assignment-value exp))))
+    (lambda (env succeed fail)
+      (vproc env
+             (lambda (val fail2)
+               (set-variable-value! var val env)
+               (succeed 'ok fail2))
              fail))))
 
 (define (analyze-application exp)
