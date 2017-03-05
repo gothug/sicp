@@ -25,7 +25,7 @@
              (announce-output "Failed while preloading"))))
 
 (define (driver-loop)
-  (ambeval-preload '(define (require p) (if p 0 (amb))))
+  (ambeval-preload '(define (require p) (if (not p) (amb))))
   (ambeval-preload
    '(define (an-element-of items)
       (require (not (null? items)))
@@ -51,6 +51,7 @@
                        (announce-output
                         ";;; There are no more values of")
                        (user-print input)
+                       (newline)
                        (driver-loop)))))))
   (internal-loop
    (lambda ()
