@@ -19,6 +19,18 @@
         ((boolean? exp) true)
         (else false)))
 
+; logical not
+(define (not? exp)
+  (tagged-list? exp 'not))
+
+(define (not-content exp)
+  (cadr exp))
+
+(define (eval-not exp env)
+  (if (true? (eval (not-content exp) env))
+      false
+      true))
+
 ; variable
 (define (variable? exp) (symbol? exp))
 
@@ -58,6 +70,11 @@
                     (eval (definition-value exp) env)
                     env)
   'ok)
+
+; equality
+(define (equality? exp) (tagged-list? exp 'eq?))
+(define (equality-left exp) (cadr exp))
+(define (equality-right exp) (caddr exp))
 
 ; if
 (define (if? exp) (tagged-list? exp 'if))
@@ -307,6 +324,7 @@
         ((assignment? exp) (eval-assignment exp env))
         ((definition? exp) (eval-definition exp env))
         ((if? exp) (eval-if exp env))
+        ((not? exp) (eval-not exp env))
         ((lambda? exp)
          (make-procedure (lambda-parameters exp)
                          (scan-out-defines (lambda-body exp))
